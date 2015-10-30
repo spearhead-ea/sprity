@@ -31,6 +31,8 @@ var defaults = {
   'split': false,
   'style-indent-char': 'space',
   'style-indent-size': 2,
+  'split-max-size': null,
+  'bypass-size': null,
   'logger': {
     log: noop,
     warn: noop,
