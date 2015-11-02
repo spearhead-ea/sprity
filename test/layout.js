@@ -108,7 +108,7 @@ describe('sprity layout (lib/layout.js)', function () {
       });
   });
 
-  it('should return a stream with three layout objects, when size splitting is activted', function (done) {
+  it('should return a stream with three layout objects, when size splitting is activated', function (done) {
     var count = 0;
     opts['split-max-size'] = 150;
     require('object-stream').fromArray([{
@@ -134,4 +134,32 @@ describe('sprity layout (lib/layout.js)', function () {
         done();
       });
   });
+
+  it('should set image size to nearest power of 2 when option turned on', function (done) {
+    var count = 0;
+    opts['power-of-2-size'] = true;
+    require('object-stream').fromArray([{
+        base: '/mock/fixtures/',
+        height: 100,
+        width: 100
+      }, {
+        base: '/mock/fixtures2/',
+        height: 100,
+        width: 100
+      }])
+      .pipe(layout(opts))
+      .pipe(spy(function (res) {
+        var l = res.layout;
+        l.items.length.should.equal(2);
+        l.should.have.property('width', 128);
+        l.should.have.property('height', 256);
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        count.should.equal(1);
+        done();
+      });
+  });
+
 });
