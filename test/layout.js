@@ -107,4 +107,31 @@ describe('sprity layout (lib/layout.js)', function () {
         done();
       });
   });
+
+  it('should return a stream with three layout objects, when size splitting is activted', function (done) {
+    var count = 0;
+    opts['split-max-size'] = 150;
+    require('object-stream').fromArray([{
+        base: '/mock/fixtures/',
+        height: 100,
+        width: 100
+      }, {
+        base: '/mock/fixtures2/',
+        height: 100,
+        width: 100
+      }, {
+        base: '/mock/fixtures3/',
+        height: 100,
+        width: 100
+      }])
+      .pipe(layout(opts))
+      .pipe(spy(function (res) {
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        count.should.equal(3);
+        done();
+      });
+  });
 });
