@@ -80,4 +80,31 @@ describe('sprity layout (lib/layout.js)', function () {
         done();
       });
   });
+
+  it('should bypass image that exceed its size limit', function (done) {
+    var count = 0;
+    opts['bypass-size'] = 100;
+    require('object-stream').fromArray([{
+        base: '/mock/fixtures/',
+        height: 100,
+        width: 100
+      }, {
+        base: '/mock/fixtures2/',
+        height: 200,
+        width: 200
+      }])
+      .pipe(layout(opts))
+      .pipe(spy(function (res) {
+        var l = res.layout;
+        l.items.length.should.equal(1);
+        l.should.have.property('width', 108);
+        l.should.have.property('height', 108);
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        count.should.equal(1);
+        done();
+      });
+  });
 });
