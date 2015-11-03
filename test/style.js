@@ -199,4 +199,24 @@ describe('sprity style (lib/style.js)', function () {
         done();
       });
   });
+
+  it('should ignore bypassed image', function (done) {
+    var count = 0;
+    var bypassed = 0;
+    os.fromArray([layouts, {bypassed: true}])
+      .pipe(style(opts))
+      .pipe(spy(function (res) {
+        if (res.bypassed) {
+          return bypassed++;
+        }
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        bypassed.should.equal(1);
+        count.should.equal(2);
+        done();
+      });
+  });
+
 });

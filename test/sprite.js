@@ -216,4 +216,24 @@ describe('sprity sprite (lib/sprite.js)', function () {
       done();
     }
   });
+
+  it('should ignore bypassed image', function (done) {
+    var count = 0;
+    var bypassed = 0;
+    os.fromArray([mockLayouts, {bypassed: true}])
+      .pipe(sprite(opts))
+      .pipe(spy(function (res) {
+        if (res.bypassed) {
+          return bypassed++;
+        }
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        bypassed.should.equal(1);
+        count.should.equal(1);
+        done();
+      });
+  });
+
 });
