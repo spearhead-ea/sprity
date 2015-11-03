@@ -83,6 +83,7 @@ describe('sprity layout (lib/layout.js)', function () {
 
   it('should bypass image that exceed its size limit', function (done) {
     var count = 0;
+    var bypassed = 0;
     opts['bypass-size'] = 100;
     require('object-stream').fromArray([{
         base: '/mock/fixtures/',
@@ -95,6 +96,10 @@ describe('sprity layout (lib/layout.js)', function () {
       }])
       .pipe(layout(opts))
       .pipe(spy(function (res) {
+        if (res.bypassed) {
+          bypassed++;
+          return;
+        }
         var l = res.layout;
         l.items.length.should.equal(1);
         l.should.have.property('width', 108);
@@ -104,6 +109,7 @@ describe('sprity layout (lib/layout.js)', function () {
       .on('data', noop)
       .on('finish', function () {
         count.should.equal(1);
+        bypassed.should.equal(1);
         done();
       });
   });

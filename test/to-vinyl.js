@@ -76,4 +76,29 @@ describe('sprity to-vinyl (lib/to-vinyl.js)', function () {
         done();
       });
   });
+
+  it('should emit bypassed image as untouched', function (done) {
+    var count = 0;
+    var bypassedCount = 0;
+    var bypassed = {
+      bypassed: true,
+      fileName: 'bypassed',
+      contents: new Buffer('42')
+    };
+    os.fromArray([sprites, bypassed])
+      .pipe(toVinyl(opts))
+      .pipe(spy(function (res) {
+        if (res.path === 'test/out/bypassed') {
+          bypassedCount++;
+        }
+        count++;
+      }))
+      .on('data', noop)
+      .on('finish', function () {
+        count.should.equal(3);
+        bypassedCount.should.equal(1);
+        done();
+      });
+  });
+
 });
