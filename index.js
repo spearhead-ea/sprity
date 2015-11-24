@@ -25,7 +25,7 @@ var defaults = {
   'template': null,
   'orientation': 'binary-tree',
   'background': '#FFFFFF',
-  'margin': 1,
+  'margin': 4,
   'opacity': 0,
   'sort': true,
   'split': false,
